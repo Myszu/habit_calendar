@@ -11,6 +11,14 @@ FONT = cfg.get('Main', 'font')
 
 class Language():    
     def LoadLangpack(self, lang: str) -> list:
+        """Loads a XML language pack from `lang` folder.
+
+        Args:
+            lang (str): Short code of chosen language.
+
+        Returns:
+            list: Words included in the interface.
+        """
         tree = ET.parse(f'./modules/lang/{lang}.xml')
         root = tree.getroot()
         
@@ -25,7 +33,13 @@ class Language():
             
 
 def SaveChanges(section: str, setting: str, value):
+    """Save changes made by user to the config file.
+
+    Args:
+        section (str): Section in config file.
+        setting (str): Setting's name in the config file.
+        value (_type_): The value of setting user want's to set.
+    """
     cfg.set(section, setting, value)
     with open('./modules/config.cfg', 'w') as configfile:
         cfg.write(configfile)
-        
