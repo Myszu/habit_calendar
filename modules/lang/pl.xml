@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pl>
+    <main>
+        <title>Kalendarz Nawyków</title>
+    </main>
+    <days>
+        <short>
+            <mon>Pon</mon>
+            <tue>Wt</tue>
+            <wed>Śr</wed>
+            <thu>Czw</thu>
+            <fri>Pt</fri>
+            <sat>Sob</sat>
+            <sun>Ndz</sun>
+        </short>
+        <full>
+            <mon>Poniedziałek</mon>
+            <tue>Wtorek</tue>
+            <wed>Środa</wed>
+            <thu>Czwartek</thu>
+            <fri>Piątek</fri>
+            <sat>Sobota</sat>
+            <sun>Niedziela</sun>
+        </full>
+    </days>
+</pl>
