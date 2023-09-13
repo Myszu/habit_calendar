@@ -1,29 +1,21 @@
-from sqlalchemy import Column, Float, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, Boolean
 from modules.database import Base
 
 
-class Orders(Base):
-    __tablename__ = "data"
+class Tasks(Base):
+    __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    date = Column(Date)
-    associate = Column(String)
-    unita = Column(Float)
-    unitb = Column(Float)
-    unitc = Column(Float)
-    unitd = Column(Float)
-    unite = Column(Float)
-    unitf = Column(Float)
-    unitg = Column(Float)
-    unith = Column(Float)
+    user = Column(String)
+    start_date = Column(Date)
+    frequency = Column(Integer)
+    quantity = Column(Integer)
    
 
 class Users(Base):
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    login = Column(String)
-    fname = Column(String)
-    lname = Column(String)
+    name = Column(String, unique=True)
     password = Column(String)
-    lvl = Column(Integer)   
+    admin = Column(Boolean)
