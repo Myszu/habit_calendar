@@ -13,8 +13,12 @@ class Main(customtkinter.CTk):
         language = set.Language()
         self.langpack = language.LoadLangpack(set.LANGUAGE)
         
-        models.Base.metadata.create_all(bind=engine)
-        self.db = SessionLocal()
+        self.InitializeDB()
+        self.users = self.CheckUsers()
+        
+        if self.users == 0:
+            self.db.add(models.Users(name='Admin', password='', admin=True))
+            self.db.commit()
         
         self.title(self.langpack[0][0])
         self.geometry(set.RES)
@@ -85,6 +89,15 @@ class Main(customtkinter.CTk):
             current_col += 1
             
         self.mainloop()
+        
+        
+    def InitializeDB(self):
+        models.Base.metadata.create_all(bind=engine)
+        self.db = SessionLocal()
+       
+        
+    def CheckUsers(self):
+        return self.db.query(models.Users).count()
         
     
 if __name__ == "__main__":
