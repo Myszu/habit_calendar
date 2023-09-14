@@ -8,6 +8,7 @@ LANGUAGE = cfg.get('Main', 'language')
 RES = cfg.get('Main', 'resolution')
 SCALE = cfg.getfloat('Main', 'scaling')
 FONT = cfg.get('Main', 'font')
+VER = 'ver. 1.0.0'
 
 class Language():    
     def LoadLangpack(self, lang: str) -> list:
@@ -23,16 +24,17 @@ class Language():
         root = tree.getroot()
         
         main = [set.text for set in root.find('main')]
+        user_panel = [set.text for set in root.find('user')]
                
         days = root.find('days')
         short_days = [day.text for day in days.find('short')]
         full_days = [day.text for day in days.find('full')]
         
-        pack = [main, short_days, full_days]
+        pack = [main, user_panel, short_days, full_days]
         return pack
             
 
-def SaveChanges(section: str, setting: str, value):
+def SaveChanges(section: str, setting: str, value) -> None:
     """Save changes made by user to the config file.
 
     Args:
