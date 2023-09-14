@@ -2,7 +2,27 @@
 <pl>
     <main>
         <title>Kalendarz Nawyków</title>
+        <active-user>Aktywny Użytkownik</active-user>
+        <user-panel>Panel Użytkownika</user-panel>
     </main>
+    <user>
+        <title>Profil Użytkownika</title>
+        <name>Nazwa Użytkownika</name>
+        <password>Hasło</password>
+        <set>Ustaw</set>
+        <change>Zmień</change>
+        <name-done>Zmieniono nazwę!</name-done>
+        <name-empty>Nazwa jest pusta!</name-empty>
+        <name-short>Nazwa jest za krótka!</name-short>
+        <name-chars>Użyto niedozwolonych znaków!</name-chars>
+        <name-same>Nowa nazwa jest taka jak obecna!</name-same>
+        <password>Hasło</password>
+        <pass-done>Zmieniono hasło!</pass-done>
+        <pass-empty>Hasło jest puste!</pass-empty>
+        <pass-short>Hasło jest za krótkie!</pass-short>
+        <pass-chars>Użyto niedozwolonych znaków!</pass-chars>
+        <pass-same>Nowe hasło jest takie jak obecne!</pass-same>
+    </user>
     <days>
         <short>
             <mon>Pon</mon>
