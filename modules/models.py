@@ -20,7 +20,9 @@ class Users(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, unique=True)
     password = Column(String)
+    language = Column(String)
     admin = Column(Boolean)
+    active = Column(Boolean)
     
 
 class Tasks(Base):
