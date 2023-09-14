@@ -10,20 +10,22 @@ class Main(customtkinter.CTk):
     def __init__(self) -> None:
         super().__init__()
         
+        self.protocol("WM_DELETE_WINDOW", self.OnClose)
+        
         language = set.Language()
         self.langpack = language.LoadLangpack(set.LANGUAGE)
         
         self.InitializeDB()
-        self.users = self.CheckUsers()
+        self.users = self.CountUsers()
         
         if self.users == 0:
             self.db.add(models.Users(name='Admin', password='', admin=True))
             self.db.commit()
         
+        # MAIN WINDOW CONFIGURATION
         self.title(self.langpack[0][0])
         self.geometry(set.RES)
         customtkinter.set_widget_scaling(set.SCALE)
-        # self.protocol("WM_DELETE_WINDOW", self.OnClose)
         
         self.grid_columnconfigure(0, weight=0)
         self.grid_columnconfigure(1, weight=1)
@@ -34,6 +36,7 @@ class Main(customtkinter.CTk):
         # FONTS TEMPLATES
         self.font_title = customtkinter.CTkFont(family=set.FONT, size=20, weight="bold")
         self.font_label = customtkinter.CTkFont(family=set.FONT, size=14)
+        self.font_today = customtkinter.CTkFont(family=set.FONT, size=16, weight='bold')
         self.font_weekend = customtkinter.CTkFont(family=set.FONT, size=14, slant='italic')
         self.font_info = customtkinter.CTkFont(family=set.FONT, size=26)
         
@@ -81,7 +84,7 @@ class Main(customtkinter.CTk):
                     date_label = customtkinter.CTkLabel(card, text=f'{self.cal[i].strftime("%d")}', font=self.font_label)
                     
                 if self.cal[i] == self.today:
-                    date_label.configure(text_color='cyan')
+                    date_label.configure(font=self.font_today, text_color='cyan')
                     
                 date_label.grid(row=0, column=0, padx=10, pady=(5, 0), sticky="nwe")
 
@@ -92,12 +95,26 @@ class Main(customtkinter.CTk):
         
         
     def InitializeDB(self):
+        """Initializes connection with database.
+        """
         models.Base.metadata.create_all(bind=engine)
         self.db = SessionLocal()
        
         
-    def CheckUsers(self):
+    def CountUsers(self) -> int:
+        """Returns number of users in database.
+
+        Returns:
+            int: User count.
+        """
         return self.db.query(models.Users).count()
+    
+    
+    def OnClose(self):
+        """Defines all actions to be done before closing the app.
+        """
+        self.db.close()
+        self.quit()
         
     
 if __name__ == "__main__":
