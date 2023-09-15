@@ -13,17 +13,18 @@ class Main(ctk.CTk):
         
         self.protocol("WM_DELETE_WINDOW", self.OnClose)
         
-        language = set.Language()
-        self.lp_main, self.lp_user_panel, self.lp_short_days, self.lp_full_days = language.LoadLangpack(set.LANGUAGE)
+        self.language = set.Language()
         
         self.InitializeDB()
-        self.users = self.CountUsers()
+        self.users_count = self.CountUsers()
         
-        if self.users == 0:
-            self.db.add(models.Users(name='Admin', password='', admin=True, active=True))
+        if self.users_count == 0:
+            self.db.add(models.Users(name='Admin', password='', language=set.LANGUAGE, shorts=set.SHORTCUTS, theme=set.THEME, mode=set.MODE, admin=True, active=True))
             self.db.commit()
             
         self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        
+        self.ApplyUserPref()
         
         # MAIN WINDOW CONFIGURATION
         self.title(self.lp_main[0])
@@ -63,25 +64,29 @@ class Main(ctk.CTk):
         self.content_frame = ctk.CTkFrame(self)
         self.content_frame.columnconfigure([0, 1, 2, 3, 4, 5, 6], weight=1)
         self.content_frame.rowconfigure(0, weight=0)
-        self.content_frame.rowconfigure([1, 2, 3, 4, 5, 6], weight=1)
+        self.content_frame.rowconfigure([1, 2, 3, 4, 5], weight=1)
         self.content_frame.grid(row=0, column=1, padx=10, pady=(10, 0), sticky="nswe")
 
         # FOOTER
         self.footer_label = ctk.CTkLabel(self, text=set.VER, font=self.font_footer)
         self.footer_label.grid(row=1, column=1, padx=5, pady=(5, 0), sticky="e")
-        self.footer_label.configure(text_color='gray30')
+        self.footer_label.configure(text_color='gray50')
         
         # BUILD CALENDAR
         self.today = date.today()
         self.first_day = (self.today - timedelta(self.today.day - 1))
         self.first_day_weekday = int(self.first_day.strftime("%w"))
-        self.cal: list = self.lp_short_days
-        
-        for day in range(42):
+        if set.SHORTCUTS:
+            self.cal: list = self.lp_short_days
+        else:
+            self.cal: list = self.lp_full_days
+            
+        for day in range(35):
             self.cal.append((self.first_day + timedelta(day - self.first_day_weekday + 1)))
             
         current_row = 0
         current_col = 0
+        current_month = date.today().month
         
         for i in range(len(self.cal)):
             if (i) % 7 == 0 and i > 1:
@@ -94,15 +99,22 @@ class Main(ctk.CTk):
             card.columnconfigure(0, weight=1)
             
             if i < 7:
-                date_label = ctk.CTkLabel(card, text=f'{self.cal[i]}', font=self.font_weekend)
+                date_label = ctk.CTkLabel(card, text=f'{self.cal[i]}', font=self.font_weekend, text_color='#3a7ebf')
                 date_label.grid(row=0, column=0, padx=10, pady=0, sticky="w")
             else:
                 if int(self.cal[i].strftime("%w")) == 6 or int(self.cal[i].strftime("%w")) == 0:
                     date_label = ctk.CTkLabel(card, text=f'{self.cal[i].strftime("%d")}', font=self.font_weekend)
-                    date_label.configure(text_color='red')
+                    
+                    if self.cal[i].month != current_month:
+                        date_label.configure(text_color="darkred")
+                    else:
+                        date_label.configure(text_color='red')
                 else:
                     date_label = ctk.CTkLabel(card, text=f'{self.cal[i].strftime("%d")}', font=self.font_label)
-                            
+                
+                    if self.cal[i].month != current_month:
+                        date_label.configure(text_color="gray50")
+                        
                 date_label.grid(row=0, column=0, padx=10, pady=(5, 0), sticky="nwe")
 
             if self.cal[i] == self.today:
@@ -115,7 +127,23 @@ class Main(ctk.CTk):
         self.mainloop()
         
         
-    def InitializeDB(self):
+    def ApplyUserPref(self) -> None:
+        """Applies users preferences to various settings.
+        """
+        self.lp_main, self.lp_user_panel, self.lp_short_days, self.lp_full_days = self.language.LoadLangpack(self.active_user.language)
+        
+        if self.active_user.theme == 'blue':
+            ctk.set_default_color_theme("dark-blue")
+        else:
+            ctk.set_default_color_theme(self.active_user.theme)
+            
+        if self.active_user.mode == 'default':
+            ctk.set_appearance_mode('system')
+        else:
+            ctk.set_appearance_mode(self.active_user.mode)
+        
+        
+    def InitializeDB(self) -> None:
         """Initializes connection with database.
         """
         models.Base.metadata.create_all(bind=engine)
@@ -181,7 +209,8 @@ class Main(ctk.CTk):
         
         
     def ChangeUsername(self) -> None:
-        """Changes username
+        """Changes username if the field is not empty, input is at least 3 characters long, does not contain
+        any special character and is not the same as current username.
         """
         if not self.change_username_entry.get():
             self.change_username_status.configure(text=self.lp_user_panel[6], text_color="red")
@@ -210,7 +239,11 @@ class Main(ctk.CTk):
         self.change_username_status.configure(text=self.lp_user_panel[5], text_color="lightgreen")
         
         
-    def ChangePassword(self):
+    def ChangePassword(self) -> None:
+        """Changes password if the field is not empty, input is at leastn 3 characters long, does not contain
+        any special character and is not the same as current password. Password sent to database is encoded with
+        sha256 before sending.
+        """
         hashed = hash.sha256(self.change_password_entry.get().encode()).hexdigest()
         
         if not self.change_password_entry.get():
@@ -242,7 +275,7 @@ class Main(ctk.CTk):
         """Defines all actions to be done before closing the app.
         """
         self.db.close()
-        self.quit()      
+        self.quit()
         
     
 if __name__ == "__main__":
