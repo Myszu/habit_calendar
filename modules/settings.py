@@ -8,7 +8,10 @@ LANGUAGE = cfg.get('Main', 'language')
 RES = cfg.get('Main', 'resolution')
 SCALE = cfg.getfloat('Main', 'scaling')
 FONT = cfg.get('Main', 'font')
-VER = 'ver. 1.0.0'
+SHORTCUTS = cfg.getboolean('Main', 'shortcuts')
+THEME = cfg.get('Main', 'theme')
+MODE = cfg.get('Main', 'mode')
+VER = 'ver. 1.0.1'
 
 class Language():    
     def LoadLangpack(self, lang: str) -> list:
