@@ -21,6 +21,9 @@ class Users(Base):
     name = Column(String, unique=True)
     password = Column(String)
     language = Column(String)
+    shorts = Column(Boolean)
+    theme = Column(String)
+    mode = Column(String)
     admin = Column(Boolean)
     active = Column(Boolean)
     
