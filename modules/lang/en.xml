@@ -16,13 +16,18 @@
         <name-short>Username is to short!</name-short>
         <name-chars>Forbidden characters used!</name-chars>
         <name-same>New username is the same as current!</name-same>
-        <password>Password</password>
         <pass-done>Password changed!</pass-done>
         <pass-empty>Password is empty!</pass-empty>
         <pass-short>Password is to short!</pass-short>
         <pass-chars>Forbidden characters used!</pass-chars>
         <pass-same>New password is the same as current!</pass-same>
+        <language>Language</language>
+        <choose>Choose</choose>
     </user>
+    <languages>
+        <polish>Polish</polish>
+        <english>English</english>
+    </languages>
     <days>
         <short>
             <mon>Mon</mon>
