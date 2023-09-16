@@ -16,13 +16,18 @@
         <name-short>Nazwa jest za krótka!</name-short>
         <name-chars>Użyto niedozwolonych znaków!</name-chars>
         <name-same>Nowa nazwa jest taka jak obecna!</name-same>
-        <password>Hasło</password>
         <pass-done>Zmieniono hasło!</pass-done>
         <pass-empty>Hasło jest puste!</pass-empty>
         <pass-short>Hasło jest za krótkie!</pass-short>
         <pass-chars>Użyto niedozwolonych znaków!</pass-chars>
         <pass-same>Nowe hasło jest takie jak obecne!</pass-same>
+        <language>Język</language>
+        <choose>Wybierz</choose>
     </user>
+    <languages>
+        <polish>Polski</polish>
+        <english>Angielski</english>
+    </languages>
     <days>
         <short>
             <mon>Pon</mon>
