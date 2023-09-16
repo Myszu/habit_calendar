@@ -11,7 +11,7 @@ FONT = cfg.get('Main', 'font')
 SHORTCUTS = cfg.getboolean('Main', 'shortcuts')
 THEME = cfg.get('Main', 'theme')
 MODE = cfg.get('Main', 'mode')
-VER = 'ver. 1.0.1'
+VER = 'ver. 1.0.2'
 
 class Language():    
     def LoadLangpack(self, lang: str) -> list:
@@ -28,12 +28,13 @@ class Language():
         
         main = [set.text for set in root.find('main')]
         user_panel = [set.text for set in root.find('user')]
+        languages_names = [set.text for set in root.find('languages')]
                
         days = root.find('days')
         short_days = [day.text for day in days.find('short')]
         full_days = [day.text for day in days.find('full')]
         
-        pack = [main, user_panel, short_days, full_days]
+        pack = [main, user_panel, languages_names, short_days, full_days]
         return pack
             
 
