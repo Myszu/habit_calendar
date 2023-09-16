@@ -12,6 +12,7 @@ class Habits(Base):
     icon = Column(String)
     frequency = Column(Integer)
     quantity = Column(Integer)
+    weekends = Column(Boolean)
    
 
 class Users(Base):
