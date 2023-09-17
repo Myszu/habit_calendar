@@ -27,7 +27,7 @@ class Main(ctk.CTk):
         self.ApplyUserPref()
         
         # MAIN WINDOW CONFIGURATION
-        self.title(self.lp_main[0])
+        self.title(self.lp_main['title'])
         self.geometry(set.RES)
         ctk.set_widget_scaling(set.SCALE)
         
@@ -52,13 +52,13 @@ class Main(ctk.CTk):
         self.menu_frame.rowconfigure(2, weight=1)
         self.menu_frame.grid(row=0, rowspan=2, column=0, padx=0, pady=0, sticky="nswe")
         
-        self.current_user_label = ctk.CTkLabel(self.menu_frame, text=f'{self.lp_main[1]}', font=self.font_title)
+        self.current_user_label = ctk.CTkLabel(self.menu_frame, text=f'{self.lp_main["active-user"]}', font=self.font_title)
         self.current_user_label.grid(row=0, column=0, padx=50, pady=(15, 5), sticky="we")
         self.username_label = ctk.CTkLabel(self.menu_frame, text=f'{self.active_user.name}', font=self.font_username)
         self.username_label.grid(row=1, column=0, padx=0, pady=(0, 10), sticky="we")
         self.username_label.configure(text_color=self.main_color)
         
-        self.user_panel_button = ctk.CTkButton(self.menu_frame, text=f'{self.lp_main[2]}', font=self.font_label, command=self.OpenUserPanel)
+        self.user_panel_button = ctk.CTkButton(self.menu_frame, text=f'{self.lp_main["user-panel"]}', font=self.font_label, command=self.OpenUserPanel)
         self.user_panel_button.grid(row=2, column=0, padx=40, pady=(5, 15), sticky="swe")
         
         # CONTENT FRAME
@@ -77,10 +77,6 @@ class Main(ctk.CTk):
         self.today = date.today()
         self.first_day = (self.today - timedelta(self.today.day - 1))
         self.first_day_weekday = int(self.first_day.strftime("%w"))
-        if set.SHORTCUTS:
-            self.cal: list = self.lp_short_days
-        else:
-            self.cal: list = self.lp_full_days
             
         for day in range(35):
             self.cal.append((self.first_day + timedelta(day - self.first_day_weekday + 1)))
@@ -131,7 +127,7 @@ class Main(ctk.CTk):
     def ApplyUserPref(self) -> None:
         """Applies users preferences to various settings.
         """
-        self.lp_main, self.lp_user_panel, self.languages_names, self.lp_short_days, self.lp_full_days = self.language.LoadLangpack(self.active_user.language)
+        self.lp_main, self.lp_user_panel, self.lp_settings, self.languages_names, self.lp_short_days, self.lp_full_days = self.language.LoadLangpack(self.active_user.language)
         
         if self.active_user.theme == 'blue':
             ctk.set_default_color_theme("dark-blue")
@@ -144,6 +140,11 @@ class Main(ctk.CTk):
             ctk.set_appearance_mode('system')
         else:
             ctk.set_appearance_mode(self.active_user.mode)
+            
+        if self.active_user.shorts:
+            self.cal: list = self.lp_short_days
+        else:
+            self.cal: list = self.lp_full_days
             
         
         
@@ -170,7 +171,7 @@ class Main(ctk.CTk):
 
         self.user_panel.geometry('800x600')
         self.user_panel.attributes('-topmost', True)
-        self.user_panel.title(self.lp_main[2])
+        self.user_panel.title(self.lp_main['user-panel'])
         
         self.user_panel.grid_columnconfigure(0, weight=0)
         self.user_panel.grid_columnconfigure(1, weight=1)
@@ -181,43 +182,52 @@ class Main(ctk.CTk):
         self.user_menu_frame.grid(row=0, column=0, padx=0, pady=0, sticky="nswe")
         
         # USERNAME
-        self.change_username_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel[1]}', font=self.font_label)
+        self.change_username_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel["name"]}', font=self.font_label)
         self.change_username_label.grid(row=0, column=0, columnspan=2, padx=15, pady=(10, 0), sticky="nswe")
         
         self.change_username_entry = ctk.CTkEntry(self.user_menu_frame, placeholder_text=self.active_user.name)
         self.change_username_entry.grid(row=1, column=0, padx=(10, 5), pady=0, sticky="nswe")
         
-        self.change_username_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_user_panel[4]}', width=40, font=self.font_label, command=self.ChangeUsername)
+        self.change_username_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_settings["change"]}', width=40, font=self.font_label, command=self.ChangeUsername)
         self.change_username_button.grid(row=1, column=1, padx=(5, 20), pady=0, sticky="nswe")
         
         self.change_username_status = ctk.CTkLabel(self.user_menu_frame, text=f'', font=self.font_label)
         self.change_username_status.grid(row=2, column=0, columnspan=2, padx=15, pady=(0, 2), sticky="nswe")
         
         # PASSWORD
-        self.change_password_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel[2]}', font=self.font_label)
+        self.change_password_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel["password"]}', font=self.font_label)
         self.change_password_label.grid(row=3, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
         
         self.change_password_entry = ctk.CTkEntry(self.user_menu_frame, show="*")
         self.change_password_entry.grid(row=4, column=0, padx=(10, 5), pady=0, sticky="nswe")
         
-        if self.active_user.password:
-            self.change_password_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_user_panel[4]}', width=40, font=self.font_label, command=self.ChangePassword)
+        if not self.active_user.password:
+            self.change_password_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_settings["set"]}', width=40, font=self.font_label, command=self.ChangePassword)
         else:
-            self.change_password_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_user_panel[3]}', width=40, font=self.font_label, command=self.ChangePassword)
+            self.change_password_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_settings["change"]}', width=40, font=self.font_label, command=self.ChangePassword)
         self.change_password_button.grid(row=4, column=1, padx=(5, 20), pady=0, sticky="nswe")
         
         self.change_password_status = ctk.CTkLabel(self.user_menu_frame, text=f'', font=self.font_label)
         self.change_password_status.grid(row=5, column=0, columnspan=2, padx=15, pady=(0, 5), sticky="nswe")
         
         # LANGUAGE
-        self.change_language_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel[15]}', font=self.font_label)
+        self.change_language_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel["language"]}', font=self.font_label)
         self.change_language_label.grid(row=6, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
         
         self.change_language_combo = ctk.CTkComboBox(self.user_menu_frame, font=self.font_label, values=self.languages_names)
         self.change_language_combo.grid(row=7, column=0, padx=15, pady=0, sticky="nswe")
         
-        self.change_language_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_user_panel[4]}', width=40, font=self.font_label, command=self.ChangeLanguage)
+        self.change_language_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_settings["change"]}', width=40, font=self.font_label, command=self.ChangeLanguage)
         self.change_language_button.grid(row=7, column=1, padx=(5, 20), pady=0, sticky="nswe")
+        
+        # SHORTCUTS
+        self.off_on = [self.lp_settings['off'], self.lp_settings['on']]
+        self.change_shortcuts_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel["shortcuts"]}', font=self.font_label)
+        self.change_shortcuts_label.grid(row=8, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
+        
+        self.change_shortcuts_segbutton = ctk.CTkSegmentedButton(self.user_menu_frame, font=self.font_label, values=self.off_on, command=self.ChangeShortcuts)
+        self.change_shortcuts_segbutton.grid(row=9, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
+        self.change_shortcuts_segbutton.set(self.off_on[int(self.active_user.shorts)])
         
         # CONTENT FRAME
         self.user_content_frame = ctk.CTkFrame(self.user_panel)
@@ -229,22 +239,22 @@ class Main(ctk.CTk):
         any special character and is not the same as current username.
         """
         if not self.change_username_entry.get():
-            self.change_username_status.configure(text=self.lp_user_panel[6], text_color="red")
+            self.change_username_status.configure(text=self.lp_user_panel['name-empty'], text_color="red")
             return
         
         if len(self.change_username_entry.get()) < 3:
-            self.change_username_status.configure(text=self.lp_user_panel[7], text_color="red")
+            self.change_username_status.configure(text=self.lp_user_panel['name-short'], text_color="red")
             return
         
         spec = '!@#$%^&*()[]{}\'"?,.<>;:\\| '
         test = [char for char in self.change_username_entry.get() if char in spec]
         
         if test:
-            self.change_username_status.configure(text=self.lp_user_panel[8], text_color="red")
+            self.change_username_status.configure(text=self.lp_user_panel['name-chars'], text_color="red")
             return
         
         if self.change_username_entry.get() == self.active_user.name:
-            self.change_username_status.configure(text=self.lp_user_panel[8], text_color="red")
+            self.change_username_status.configure(text=self.lp_user_panel['name-same'], text_color="red")
             return
         
         self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.name: self.change_username_entry.get()})
@@ -252,7 +262,7 @@ class Main(ctk.CTk):
         
         self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
         self.username_label.configure(text=self.active_user.name)
-        self.change_username_status.configure(text=self.lp_user_panel[5], text_color="lightgreen")
+        self.change_username_status.configure(text=self.lp_user_panel['name-done'], text_color="lightgreen")
         
         
     def ChangePassword(self) -> None:
@@ -263,28 +273,28 @@ class Main(ctk.CTk):
         hashed = hash.sha256(self.change_password_entry.get().encode()).hexdigest()
         
         if not self.change_password_entry.get():
-            self.change_password_status.configure(text=self.lp_user_panel[12], text_color="red")
+            self.change_password_status.configure(text=self.lp_user_panel['pass-empty'], text_color="red")
             return
         
         if len(self.change_password_entry.get()) < 8:
-            self.change_password_status.configure(text=self.lp_user_panel[13], text_color="red")
+            self.change_password_status.configure(text=self.lp_user_panel['pass-short'], text_color="red")
             return
         
         spec = '!@#$%^&*()[]{}\'"?,.<>;:\\| '
         test = [char for char in self.change_password_entry.get() if char in spec]
         if test:
-            self.change_password_status.configure(text=self.lp_user_panel[14], text_color="red")
+            self.change_password_status.configure(text=self.lp_user_panel['pass-chars'], text_color="red")
             return
         
         if hashed == self.active_user.password:
-            self.change_password_status.configure(text=self.lp_user_panel[15], text_color="red")
+            self.change_password_status.configure(text=self.lp_user_panel['pass-same'], text_color="red")
             return
         
         self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.password: hashed})
         self.db.commit()
         
         self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
-        self.change_password_status.configure(text=self.lp_user_panel[11], text_color="lightgreen")
+        self.change_password_status.configure(text=self.lp_user_panel['pass-done'], text_color="lightgreen")
     
         
     def ChangeLanguage(self) -> None:
@@ -294,6 +304,14 @@ class Main(ctk.CTk):
             case _:
                 chosen = 'en'
         self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.language: chosen})
+        self.db.commit()
+        
+        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        self.ForceRefresh()
+        
+        
+    def ChangeShortcuts(self, state):
+        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.shorts: self.off_on.index(state)})
         self.db.commit()
         
         self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
