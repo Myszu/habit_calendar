@@ -11,7 +11,7 @@ FONT = cfg.get('Main', 'font')
 SHORTCUTS = cfg.getboolean('Main', 'shortcuts')
 THEME = cfg.get('Main', 'theme')
 MODE = cfg.get('Main', 'mode')
-VER = 'ver. 1.0.2'
+VER = 'ver. 1.0.3'
 
 class Language():    
     def LoadLangpack(self, lang: str) -> list:
@@ -26,15 +26,17 @@ class Language():
         tree = ET.parse(f'./modules/lang/{lang}.xml')
         root = tree.getroot()
         
-        main = [set.text for set in root.find('main')]
-        user_panel = [set.text for set in root.find('user')]
-        languages_names = [set.text for set in root.find('languages')]
+        main = {record.tag: record.text for record in root.find('main')}
+        user_panel = {record.tag: record.text for record in root.find('user')}
+        settings = {record.tag: record.text for record in root.find('settings')}
+        
+        languages_names = [record.text for record in root.find('languages')]
                
         days = root.find('days')
         short_days = [day.text for day in days.find('short')]
         full_days = [day.text for day in days.find('full')]
         
-        pack = [main, user_panel, languages_names, short_days, full_days]
+        pack = [main, user_panel, settings, languages_names, short_days, full_days]
         return pack
             
 
