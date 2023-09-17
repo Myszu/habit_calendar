@@ -9,8 +9,6 @@
         <title>Profil Użytkownika</title>
         <name>Nazwa Użytkownika</name>
         <password>Hasło</password>
-        <set>Ustaw</set>
-        <change>Zmień</change>
         <name-done>Zmieniono nazwę!</name-done>
         <name-empty>Nazwa jest pusta!</name-empty>
         <name-short>Nazwa jest za krótka!</name-short>
@@ -22,8 +20,15 @@
         <pass-chars>Użyto niedozwolonych znaków!</pass-chars>
         <pass-same>Nowe hasło jest takie jak obecne!</pass-same>
         <language>Język</language>
-        <choose>Wybierz</choose>
+        <shortcuts>Skróty</shortcuts>
     </user>
+    <settings>
+        <set>Ustaw</set>
+        <change>Zmień</change>
+        <choose>Wybierz</choose>
+        <on>Włączone</on>
+        <off>Wyłączone</off>
+    </settings>
     <languages>
         <polish>Polski</polish>
         <english>Angielski</english>
