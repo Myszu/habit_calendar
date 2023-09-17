@@ -9,8 +9,6 @@
         <title>User Profile</title>
         <name>Username</name>
         <password>Password</password>
-        <set>Set</set>
-        <change>Change</change>
         <name-done>Username changed!</name-done>
         <name-empty>Username is empty!</name-empty>
         <name-short>Username is to short!</name-short>
@@ -22,8 +20,15 @@
         <pass-chars>Forbidden characters used!</pass-chars>
         <pass-same>New password is the same as current!</pass-same>
         <language>Language</language>
-        <choose>Choose</choose>
+        <shortcuts>Shortcuts</shortcuts >
     </user>
+    <settings>
+        <set>Set</set>
+        <change>Change</change>
+        <choose>Choose</choose>
+        <on>On</on>
+        <off>Off</off>
+    </settings>
     <languages>
         <polish>Polish</polish>
         <english>English</english>
