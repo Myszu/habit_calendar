@@ -120,8 +120,6 @@ class Main(ctk.CTk):
                 
             self.cards.append(card)
             current_col += 1
-            
-        self.mainloop()
         
         
     def ApplyUserPref(self) -> None:
@@ -145,7 +143,6 @@ class Main(ctk.CTk):
             self.cal: list = self.lp_short_days
         else:
             self.cal: list = self.lp_full_days
-            
         
         
     def InitializeDB(self) -> None:
@@ -229,6 +226,26 @@ class Main(ctk.CTk):
         self.change_shortcuts_segbutton.grid(row=9, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
         self.change_shortcuts_segbutton.set(self.off_on[int(self.active_user.shorts)])
         
+        # THEME
+        self.themes_colors = [self.lp_settings['blue'], self.lp_settings['green']]
+        self.change_theme_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel["theme"]}', font=self.font_label)
+        self.change_theme_label.grid(row=10, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
+        
+        self.change_theme_combo = ctk.CTkComboBox(self.user_menu_frame, font=self.font_label, values=self.themes_colors)
+        self.change_theme_combo.grid(row=11, column=0, padx=15, pady=0, sticky="nswe")
+        
+        self.change_theme_button = ctk.CTkButton(self.user_menu_frame, text=f'{self.lp_settings["change"]}', width=40, font=self.font_label, command=self.ChangeTheme)
+        self.change_theme_button.grid(row=11, column=1, padx=(5, 20), pady=0, sticky="nswe")
+        
+        # MODE
+        self.modes = [self.lp_settings['light'], self.lp_settings['dark'], self.lp_settings['default']]
+        self.change_mode_label = ctk.CTkLabel(self.user_menu_frame, text=f'{self.lp_user_panel["mode"]}', font=self.font_label)
+        self.change_mode_label.grid(row=12, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
+        
+        self.change_mode_segbutton = ctk.CTkSegmentedButton(self.user_menu_frame, font=self.font_label, values=self.modes, command=self.ChangeMode)
+        self.change_mode_segbutton.grid(row=13, column=0, columnspan=2, padx=15, pady=0, sticky="nswe")
+        self.change_mode_segbutton.set(self.lp_settings[(self.active_user.mode)])
+        
         # CONTENT FRAME
         self.user_content_frame = ctk.CTkFrame(self.user_panel)
         self.user_content_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nswe")
@@ -298,6 +315,8 @@ class Main(ctk.CTk):
     
         
     def ChangeLanguage(self) -> None:
+        """Change language in database, user's settings and apply change.
+        """
         match self.languages_names.index(self.change_language_combo.get()):
             case 0:
                 chosen = 'pl'
@@ -310,7 +329,12 @@ class Main(ctk.CTk):
         self.ForceRefresh()
         
         
-    def ChangeShortcuts(self, state):
+    def ChangeShortcuts(self, state: str) -> None:
+        """Change setting of day names length in database, user's setting and applies the change.
+
+        Args:
+            state (str): State of setting - `ON` or `OFF`.
+        """
         self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.shorts: self.off_on.index(state)})
         self.db.commit()
         
@@ -318,12 +342,52 @@ class Main(ctk.CTk):
         self.ForceRefresh()
         
         
+    def ChangeTheme(self) -> None:
+        """Changes theme in database, user's setting and applies change.
+        """
+        if not self.themes_colors.index(self.change_theme_combo.get()):
+            chosen = 'blue'
+        else:
+            chosen = 'green'
+            
+        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.theme: chosen})
+        self.db.commit()
+        
+        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        ctk.set_default_color_theme(chosen)
+        self.ForceRefresh()
+        
+    
+    def ChangeMode(self, state: str) -> None:
+        """Changes mode in database, user's setting and applies change.
+        """
+        match self.modes.index(state):
+            case 0:
+                chosen = 'light'
+            case 1:
+                chosen = 'dark'
+            case _:
+                chosen = 'default'
+            
+        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.mode: chosen})
+        self.db.commit()
+        
+        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        if chosen == 'default':
+            chosen = 'system'
+        ctk.set_appearance_mode(chosen)
+        self.user_panel.destroy()
+            
+        
     def ForceRefresh(self) -> None:
+        """Destroying interface object to rebuild it with new settings applied.
+        """
         self.destroy()
         self.__init__()
+        self.mainloop()
     
     
-    def OnClose(self):
+    def OnClose(self) -> None:
         """Defines all actions to be done before closing the app.
         """
         self.db.close()
@@ -331,4 +395,5 @@ class Main(ctk.CTk):
         
     
 if __name__ == "__main__":
-    Main()
+    app = Main()
+    app.mainloop()
