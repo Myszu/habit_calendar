@@ -11,7 +11,7 @@ FONT = cfg.get('Main', 'font')
 SHORTCUTS = cfg.getboolean('Main', 'shortcuts')
 THEME = cfg.get('Main', 'theme')
 MODE = cfg.get('Main', 'mode')
-VER = 'ver. 1.0.3'
+VER = 'ver. 1.0.5'
 
 class Language():    
     def LoadLangpack(self, lang: str) -> list:
