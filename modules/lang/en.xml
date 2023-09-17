@@ -20,7 +20,9 @@
         <pass-chars>Forbidden characters used!</pass-chars>
         <pass-same>New password is the same as current!</pass-same>
         <language>Language</language>
-        <shortcuts>Shortcuts</shortcuts >
+        <shortcuts>Shortcuts</shortcuts>
+        <theme>Theme</theme>
+        <mode>Mode</mode>
     </user>
     <settings>
         <set>Set</set>
@@ -28,6 +30,11 @@
         <choose>Choose</choose>
         <on>On</on>
         <off>Off</off>
+        <blue>Blue</blue>
+        <green>Green</green>
+        <light>Light</light>
+        <dark>Dark</dark>
+        <default>Default</default>
     </settings>
     <languages>
         <polish>Polish</polish>
