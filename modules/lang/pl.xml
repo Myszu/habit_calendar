@@ -21,6 +21,8 @@
         <pass-same>Nowe hasło jest takie jak obecne!</pass-same>
         <language>Język</language>
         <shortcuts>Skróty</shortcuts>
+        <theme>Motyw</theme>
+        <mode>Tryb</mode>
     </user>
     <settings>
         <set>Ustaw</set>
@@ -28,6 +30,11 @@
         <choose>Wybierz</choose>
         <on>Włączone</on>
         <off>Wyłączone</off>
+        <blue>Niebieski</blue>
+        <green>Zielony</green>
+        <light>Jasny</light>
+        <dark>Ciemny</dark>
+        <default>Domyślny</default>
     </settings>
     <languages>
         <polish>Polski</polish>
