@@ -1,17 +1,23 @@
 from datetime import date, timedelta
 import customtkinter as ctk
 import hashlib as hash
+import os
 
 # LOCAL IMPORTS
 import modules.settings as set
 from modules.database import SessionLocal, engine
 import modules.models as models
+from PIL import ImageTk
 
 class Main(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
         
         self.protocol("WM_DELETE_WINDOW", self.OnClose)
+    
+        self.iconpath = ImageTk.PhotoImage(file=os.path.join("","icon.png"))
+        self.wm_iconbitmap()
+        self.iconphoto(False, self.iconpath)
         
         self.language = set.Language()
         
@@ -249,6 +255,12 @@ class Main(ctk.CTk):
         # CONTENT FRAME
         self.user_content_frame = ctk.CTkFrame(self.user_panel)
         self.user_content_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nswe")
+        
+        self.change_mode_label = ctk.CTkLabel(self.user_content_frame, text=f'{self.lp_user_panel["habit-name"]}', font=self.font_label)
+        self.change_mode_label.grid(row=0, column=0, padx=15, pady=(10, 0), sticky="w")
+        
+        self.change_password_entry = ctk.CTkEntry(self.user_content_frame, placeholder_text=self.lp_user_panel["habit-ph"])
+        self.change_password_entry.grid(row=4, column=0, padx=15, pady=0, sticky="we")
         
         
     def ChangeUsername(self) -> None:
