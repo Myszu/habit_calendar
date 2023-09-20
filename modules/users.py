@@ -44,6 +44,18 @@ class Users():
     
     
     def Add(self, name: str, password: str, language: str, shorts: bool, theme: str, mode: str, admin: bool, active: bool) -> None:
+        """Adds user to the database.
+
+        Args:
+            name (str): User's name.
+            password (str): Users password (might remain empty initially if user does not care about privacy).
+            language (str): User's preferable app display language.
+            shorts (bool): If true app displays shorted version of week days.
+            theme (str): User's preferable app theme.
+            mode (str): User's preferable app mode (light, dark, default).
+            admin (bool): Is user an administrator of this app?
+            active (bool): If true, user becomes active (logged in).
+        """
         self.db.add(models.Users(name=name, password=password, language=language, shorts=shorts, theme=theme, mode=mode, admin=admin, active=active))
         self.db.commit()
         
