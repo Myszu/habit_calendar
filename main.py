@@ -4,8 +4,9 @@ import hashlib as hash
 import os
 
 # LOCAL IMPORTS
-import modules.settings as set
 from modules.database import SessionLocal, engine
+from modules.users import Users
+import modules.settings as set
 import modules.models as models
 from PIL import ImageTk
 
@@ -22,14 +23,13 @@ class Main(ctk.CTk):
         self.language = set.Language()
         
         self.InitializeDB()
-        self.users_count = self.CountUsers()
+        self.users = Users(self.db)
+        self.users_count = self.users.CountUsers()
         
         if self.users_count == 0:
-            self.db.add(models.Users(name='Admin', password='', language=set.LANGUAGE, shorts=set.SHORTCUTS, theme=set.THEME, mode=set.MODE, admin=True, active=True))
-            self.db.commit()
-            
-        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+            self.users.Add(name='Admin', password='', language=set.LANGUAGE, shorts=set.SHORTCUTS, theme=set.THEME, mode=set.MODE, admin=True, active=True)            
         
+        self.active_user = self.users.GetActive()
         self.ApplyUserPref()
         
         # MAIN WINDOW CONFIGURATION
@@ -156,15 +156,6 @@ class Main(ctk.CTk):
         """
         models.Base.metadata.create_all(bind=engine)
         self.db = SessionLocal()
-       
-        
-    def CountUsers(self) -> int:
-        """Returns number of users in database.
-
-        Returns:
-            int: User count.
-        """
-        return self.db.query(models.Users).count()
     
     
     def OpenUserPanel(self) -> None:
@@ -286,10 +277,8 @@ class Main(ctk.CTk):
             self.change_username_status.configure(text=self.lp_user_panel['name-same'], text_color="red")
             return
         
-        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.name: self.change_username_entry.get()})
-        self.db.commit()
+        self.active_user = self.users.Update('name', self.change_username_entry.get())
         
-        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
         self.username_label.configure(text=self.active_user.name)
         self.change_username_status.configure(text=self.lp_user_panel['name-done'], text_color="lightgreen")
         
@@ -319,10 +308,8 @@ class Main(ctk.CTk):
             self.change_password_status.configure(text=self.lp_user_panel['pass-same'], text_color="red")
             return
         
-        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.password: hashed})
-        self.db.commit()
-        
-        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        self.active_user = self.users.Update('password', hashed)
+
         self.change_password_status.configure(text=self.lp_user_panel['pass-done'], text_color="lightgreen")
     
         
@@ -334,10 +321,8 @@ class Main(ctk.CTk):
                 chosen = 'pl'
             case _:
                 chosen = 'en'
-        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.language: chosen})
-        self.db.commit()
         
-        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        self.active_user = self.users.Update('language', chosen)
         self.ForceRefresh()
         
         
@@ -347,10 +332,7 @@ class Main(ctk.CTk):
         Args:
             state (str): State of setting - `ON` or `OFF`.
         """
-        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.shorts: self.off_on.index(state)})
-        self.db.commit()
-        
-        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        self.active_user = self.users.Update('shorts', self.off_on.index(state))
         self.ForceRefresh()
         
         
@@ -362,10 +344,7 @@ class Main(ctk.CTk):
         else:
             chosen = 'green'
             
-        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.theme: chosen})
-        self.db.commit()
-        
-        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
+        self.active_user = self.users.Update('theme', chosen)
         ctk.set_default_color_theme(chosen)
         self.ForceRefresh()
         
@@ -381,10 +360,8 @@ class Main(ctk.CTk):
             case _:
                 chosen = 'default'
             
-        self.db.query(models.Users).where(models.Users.id == self.active_user.id).update({models.Users.mode: chosen})
-        self.db.commit()
+        self.active_user = self.users.Update('mode', chosen)
         
-        self.active_user = self.db.query(models.Users).where(models.Users.active == 1).one()
         if chosen == 'default':
             chosen = 'system'
         ctk.set_appearance_mode(chosen)
