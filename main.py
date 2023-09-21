@@ -10,6 +10,8 @@ import modules.settings as set
 import modules.models as models
 from PIL import ImageTk
 
+INSTANCES = []
+
 class Main(ctk.CTk):
     def __init__(self) -> None:
         super().__init__()
@@ -374,6 +376,7 @@ class Main(ctk.CTk):
         self.destroy()
         self.__init__()
         self.mainloop()
+        INSTANCES[0].quit()
     
     
     def OnClose(self) -> None:
@@ -385,4 +388,5 @@ class Main(ctk.CTk):
     
 if __name__ == "__main__":
     app = Main()
+    INSTANCES.append(app)
     app.mainloop()
