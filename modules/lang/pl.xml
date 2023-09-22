@@ -23,6 +23,32 @@
         <shortcuts>Skróty</shortcuts>
         <theme>Motyw</theme>
         <mode>Tryb</mode>
+        <habit-name>Nazwa Nawyku</habit-name>
+        <habit-ph>Kodzić / Poćwicz skale / Kardio</habit-ph>
+        <habit-start>Data Początkowa</habit-start>
+        <habit-icon>Ikona</habit-icon>
+        <habit-freq>Powtórz co</habit-freq>
+        <day>dzień</day>
+        <days>dni</days>
+        <habit-qty>Ilość dni</habit-qty>
+        <habit-qty-ph>1-365 (Wpisz 0 dla nieskończoności)</habit-qty-ph>
+        <habit-weekend>Pomiń Weekendy</habit-weekend>
+        <habit-add>Dodaj</habit-add>
+        <weekends>
+            <actively>Aktywnie</actively>
+            <pasively>Pasywnie</pasively>
+            <include>Nie pomijaj</include>
+        </weekends>
+        <tips>
+            <actively>Uznaje, że weekend nie istnieje i kontynuuje liczenie od poniedziałku.</actively>
+            <pasively>Nadal zlicza dni weekendowe, ale jeśli zadanie przypadnie w któryś, przenosi je na poniedziałek.</pasively>
+            <include>Najlepszy tryb - brak taryfy ulgowej!</include>
+        </tips>
+        <tabs>
+            <habits>Nawyki</habits>
+            <tasks>Zadania</tasks>
+            <summary>Poddsumowanie</summary>
+        </tabs>
     </user>
     <settings>
         <set>Ustaw</set>
