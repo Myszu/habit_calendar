@@ -23,6 +23,32 @@
         <shortcuts>Shortcuts</shortcuts>
         <theme>Theme</theme>
         <mode>Mode</mode>
+        <habit-name>Habit's Name</habit-name>
+        <habit-ph>Code / Practice scales / Cardio</habit-ph>
+        <habit-start>Start Date</habit-start>
+        <habit-icon>Icon</habit-icon>
+        <habit-freq>Repeat every</habit-freq>
+        <day>day</day>
+        <days>days</days>
+        <habit-qty>Number of days</habit-qty>
+        <habit-qty-ph>1-365 (Input 0 for infinite)</habit-qty-ph>
+        <habit-weekend>Skip Weekends</habit-weekend>
+        <habit-add>Add</habit-add>
+        <weekends>
+            <actively>Actively</actively>
+            <pasively>Pasively</pasively>
+            <include>Don't skip</include>
+        </weekends>
+        <tips>
+            <actively>You can think of it, like those days didn't even exist.</actively>
+            <pasively>Still counts those days, but if it hits, moves the task to monday.</pasively>
+            <include>The best one obviously - no easy going!</include>
+        </tips>
+        <tabs>
+            <habits>Habits</habits>
+            <tasks>Tasks</tasks>
+            <summary>Summary</summary>
+        </tabs>
     </user>
     <settings>
         <set>Set</set>
