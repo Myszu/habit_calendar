@@ -1,5 +1,4 @@
 import configparser
-import xml.etree.ElementTree as ET
 
 cfg = configparser.ConfigParser()
 cfg.read('./modules/config.cfg')
@@ -11,34 +10,7 @@ FONT = cfg.get('Main', 'font')
 SHORTCUTS = cfg.getboolean('Main', 'shortcuts')
 THEME = cfg.get('Main', 'theme')
 MODE = cfg.get('Main', 'mode')
-VER = 'ver. 1.0.5'
-
-class Language():    
-    def LoadLangpack(self, lang: str) -> list:
-        """Loads a XML language pack from `lang` folder.
-
-        Args:
-            lang (str): Short code of chosen language.
-
-        Returns:
-            list: Words included in the interface.
-        """
-        tree = ET.parse(f'./modules/lang/{lang}.xml')
-        root = tree.getroot()
-        
-        main = {record.tag: record.text for record in root.find('main')}
-        user_panel = {record.tag: record.text for record in root.find('user')}
-        settings = {record.tag: record.text for record in root.find('settings')}
-        
-        languages_names = [record.text for record in root.find('languages')]
-               
-        days = root.find('days')
-        short_days = [day.text for day in days.find('short')]
-        full_days = [day.text for day in days.find('full')]
-        
-        pack = [main, user_panel, settings, languages_names, short_days, full_days]
-        return pack
-            
+VER = 'ver. 1.0.10'
 
 def SaveChanges(section: str, setting: str, value) -> None:
     """Save changes made by user to the config file.
