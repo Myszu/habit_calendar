@@ -49,6 +49,14 @@
             <tasks>Zadania</tasks>
             <summary>Poddsumowanie</summary>
         </tabs>
+        <habit-statuses>
+            <name-short>Nazwa Nawyku wydaje się nieco krótka. Minimum to 3 znaki.</name-short>
+            <name-long>Nazwa Nawyku zbyt długa. Maksimum to 25 znaków (przekroczono o X).</name-long>
+            <name-chars>Niedozwolone znaki w nazwie Nawyku.</name-chars>
+            <qty-type>Wartość "X" nie wygląda na cyfrę.</qty-type>
+            <qty-big>Przekroczono maksymalną liczbę dni. Wybierz między 1-365 lub 0 dla nieskończoności.</qty-big>
+            <habit-added>Nawyl "[1]" dodany! Rozpocznie się [2] i będzie występował co [3] dni przez [4] dni!</habit-added>
+        </habit-statuses>
     </user>
     <settings>
         <set>Ustaw</set>
