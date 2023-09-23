@@ -6,6 +6,7 @@ import os
 # LOCAL IMPORTS
 from modules.database import SessionLocal, engine
 from modules.users import Users
+from modules.habits import Habits
 from modules.language import Language
 import modules.settings as set
 import modules.models as models
@@ -26,11 +27,20 @@ class Main(ctk.CTk):
         self.language = Language()
         
         self.InitializeDB()
-        self.users = Users(self.db)
+        self.users, self.habits = Users(self.db), Habits(self.db)
         self.users_count = self.users.CountUsers()
         
         if self.users_count == 0:
-            self.users.Add(name='Admin', password='', language=set.LANGUAGE, shorts=set.SHORTCUTS, theme=set.THEME, mode=set.MODE, admin=True, active=True)            
+            self.users.Add(
+                name='Admin',
+                password='',
+                language=set.LANGUAGE,
+                shorts=set.SHORTCUTS,
+                theme=set.THEME,
+                mode=set.MODE,
+                admin=True,
+                active=True
+                )            
         
         self.active_user = self.users.GetActive()
         self.ApplyUserPref()
@@ -45,7 +55,17 @@ class Main(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
         
         self.cards = []
-        self.icons = ['👟', '🏋️', '🚴', '🏃', '🏊', '📖', '🎸', '🎻', '🥁', '🎺']
+        self.icons = {
+            'weights': '🏋️',
+            'cycling': '🚴',
+            'run': '🏃',
+            'swim': '🏊',
+            'read': '📖',
+            'guitar': '🎸',
+            'violin': '🎻',
+            'percussion': '🥁',
+            'trumpet': '🎺'
+            }
         
         # FONTS TEMPLATES
         self.font_title = ctk.CTkFont(family=set.FONT, size=20, weight="bold")
@@ -136,7 +156,7 @@ class Main(ctk.CTk):
     def ApplyUserPref(self) -> None:
         """Applies users preferences to various settings.
         """
-        self.lp_main, self.lp_user_panel, self.weekends, self.tips, self.tabs_names, self.lp_settings, self.languages_names, self.lp_short_days, self.lp_full_days = self.language.LoadLangpack(self.active_user.language)
+        self.lp_main, self.lp_user_panel, self.lp_weekends, self.lp_tips, self.lp_tabs_names, self.lp_habit_statuses, self.lp_settings, self.languages_names, self.lp_short_days, self.lp_full_days = self.language.LoadLangpack(self.active_user.language)
         
         if self.active_user.theme == 'blue':
             ctk.set_default_color_theme("dark-blue")
@@ -253,69 +273,114 @@ class Main(ctk.CTk):
         self.user_content_frame.grid(row=0, column=1, padx=10, pady=10, sticky="nswe")
         self.user_content_frame.columnconfigure(0, weight=1)
         
-        for tab_name in self.tabs_names:
+        for tab_name in self.lp_tabs_names:
             self.user_content_frame.add(tab_name)
             self.user_content_frame.tab(tab_name).columnconfigure((0, 1, 2), weight=1)
             self.user_content_frame.tab(tab_name).columnconfigure(3, weight=0)
         
         ## HABITS TAB
         # NAME
-        self.habit_name_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), text=f'{self.lp_user_panel["habit-name"]}', font=self.font_label)
+        self.habit_name_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'{self.lp_user_panel["habit-name"]}', font=self.font_label)
         self.habit_name_label.grid(row=0, column=0, columnspan=2, padx=10, pady=(10, 0), sticky="w")
 
-        self.habit_name_entry = ctk.CTkEntry(self.user_content_frame.tab(self.tabs_names[0]), placeholder_text=self.lp_user_panel["habit-ph"])
+        self.habit_name_entry = ctk.CTkEntry(self.user_content_frame.tab(self.lp_tabs_names[0]), placeholder_text=self.lp_user_panel["habit-ph"])
         self.habit_name_entry.grid(row=1, column=0, columnspan=2, padx=15, pady=0, sticky="we")
         
         # ICON
-        self.habit_icon_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), text=f'{self.lp_user_panel["habit-icon"]}', font=self.font_label)
+        self.habit_icon_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'{self.lp_user_panel["habit-icon"]}', font=self.font_label)
         self.habit_icon_label.grid(row=0, column=2, columnspan=2, padx=10, pady=(5, 0), sticky="w")
 
-        self.habit_icon_combo = ctk.CTkComboBox(self.user_content_frame.tab(self.tabs_names[0]), values=self.icons)
+        self.habit_icon_combo = ctk.CTkComboBox(self.user_content_frame.tab(self.lp_tabs_names[0]), values=list(self.icons.values()))
         self.habit_icon_combo.grid(row=1, column=2, columnspan=2, padx=15, pady=0, sticky="we")
         
         # START DATE
-        self.habit_start_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), text=f'{self.lp_user_panel["habit-start"]}', font=self.font_label)
+        self.habit_start_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'{self.lp_user_panel["habit-start"]}', font=self.font_label)
         self.habit_start_label.grid(row=4, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
 
-        self.habit_start_combo = ctk.CTkComboBox(self.user_content_frame.tab(self.tabs_names[0]), values=self.MonthDatesList())
+        self.habit_start_combo = ctk.CTkComboBox(self.user_content_frame.tab(self.lp_tabs_names[0]), values=self.MonthDatesList())
         self.habit_start_combo.grid(row=5, column=0, columnspan=4, padx=15, pady=0, sticky="we")
         
         # FREQUENCY
-        self.habit_freq_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), text=f'{self.lp_user_panel["habit-freq"]}', font=self.font_label)
+        self.habit_freq_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'{self.lp_user_panel["habit-freq"]}', font=self.font_label)
         self.habit_freq_label.grid(row=6, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
 
-        self.habit_freq_slider = ctk.CTkSlider(self.user_content_frame.tab(self.tabs_names[0]), from_=1, to=7, number_of_steps=6)
+        self.habit_freq_slider = ctk.CTkSlider(self.user_content_frame.tab(self.lp_tabs_names[0]), from_=1, to=7, number_of_steps=6)
         self.habit_freq_slider.grid(row=7, column=0, columnspan=3, padx=15, pady=0, sticky="we")
         self.habit_freq_slider.set(1)
         
-        self.habit_freq_days_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), text=f'', font=self.font_label)
+        self.habit_freq_days_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'', font=self.font_label)
         self.habit_freq_days_label.grid(row=7, column=3, padx=(0, 10), pady=(5, 0), sticky="w")
         self.habit_freq_slider.configure(command=self.UpdateSliderLabel)
         self.UpdateSliderLabel(self.habit_freq_slider.get())
         
         # QUANTITY OF DAYS
-        self.habit_qty_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), text=f'{self.lp_user_panel["habit-qty"]}', font=self.font_label)
+        self.habit_qty_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'{self.lp_user_panel["habit-qty"]}', font=self.font_label)
         self.habit_qty_label.grid(row=8, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
 
-        self.habit_qty_entry = ctk.CTkEntry(self.user_content_frame.tab(self.tabs_names[0]), placeholder_text=self.lp_user_panel["habit-qty-ph"])
+        self.habit_qty_entry = ctk.CTkEntry(self.user_content_frame.tab(self.lp_tabs_names[0]), placeholder_text=self.lp_user_panel["habit-qty-ph"])
         self.habit_qty_entry.grid(row=9, column=0, columnspan=4, padx=15, pady=0, sticky="we")
         
         # WEEKEND SKIP
-        self.habit_weekend_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), text=f'{self.lp_user_panel["habit-weekend"]}', font=self.font_label)
+        self.habit_weekend_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'{self.lp_user_panel["habit-weekend"]}', font=self.font_label)
         self.habit_weekend_label.grid(row=10, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
         
-        self.habit_weekend_segbutton = ctk.CTkSegmentedButton(self.user_content_frame.tab(self.tabs_names[0]), font=self.font_label, values=self.weekends, command=self.UpdateTipLabel)
+        self.habit_weekend_segbutton = ctk.CTkSegmentedButton(self.user_content_frame.tab(self.lp_tabs_names[0]), font=self.font_label, values=self.lp_weekends, command=self.UpdateTipLabel)
         self.habit_weekend_segbutton.grid(row=11, column=0, columnspan=4, padx=15, pady=0, sticky="we")
         
-        self.habit_tip_label = ctk.CTkLabel(self.user_content_frame.tab(self.tabs_names[0]), font=self.font_tip, text_color='gray60')
+        self.habit_tip_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), font=self.font_tip, text_color='gray60')
         self.habit_tip_label.grid(row=12, column=0, columnspan=4, padx=10, pady=(5, 0), sticky="w")
-        self.habit_weekend_segbutton.set(self.weekends[-1])
-        self.UpdateTipLabel(self.weekends[-1])
+        self.habit_weekend_segbutton.set(self.lp_weekends[-1])
+        self.UpdateTipLabel(self.lp_weekends[-1])
         
         # SUBMIT
-        self.add_habit_button = ctk.CTkButton(self.user_content_frame.tab(self.tabs_names[0]), text=f'{self.lp_user_panel["habit-add"]}', font=self.font_label)
+        self.add_habit_button = ctk.CTkButton(self.user_content_frame.tab(self.lp_tabs_names[0]), text=f'{self.lp_user_panel["habit-add"]}', font=self.font_label, command=self.AddNewHabit)
         self.add_habit_button.grid(row=13, column=0, columnspan=4, padx=200, pady=(10, 5), sticky="we")
+        
+        # STATUS
+        self.status_label = ctk.CTkLabel(self.user_content_frame.tab(self.lp_tabs_names[0]), font=self.font_tip, text='', text_color='gray60')
+        self.status_label.grid(row=14, column=0, columnspan=4, padx=10, pady=(0, 10), sticky="w")
     
+    
+    def AddNewHabit(self) -> None:
+        """Processes the data in `habit` form and if it's valid adds it to database as new `habit`.
+        """
+        spec = '!@#$%^&*()[]{}\'"?,.<>;:\\|'
+        test = [char for char in self.habit_name_entry.get() if char in spec]
+        name_length = len(self.habit_name_entry.get())
+        if test:
+            self.status_label.configure(text=self.lp_habit_statuses['name-chars'], text_color='red')
+            return
+        
+        if name_length < 3:
+            self.status_label.configure(text=self.lp_habit_statuses['name-short'], text_color='red')
+            return
+        
+        if name_length > 25:
+            self.status_label.configure(text=self.lp_habit_statuses['name-long'].replace('X', str(name_length-25)), text_color='red')
+            return
+        
+        try:
+            int(self.habit_qty_entry.get())
+        except:
+            self.status_label.configure(text=self.lp_habit_statuses['qty-type'].replace('X', self.habit_qty_entry.get()), text_color='red')
+            return
+        
+        if int(self.habit_qty_entry.get()) > 365:
+            self.status_label.configure(text=self.lp_habit_statuses['qty-big'], text_color='red')
+        
+        self.habits.Add(
+            self.active_user.name,
+            self.habit_name_entry.get(),
+            list(self.icons.keys())[list(self.icons.values()).index(self.habit_icon_combo.get())],
+            self.habit_start_combo.get(),
+            int(self.habit_freq_slider.get()),
+            int(self.habit_qty_entry.get()),
+            self.habit_weekend_segbutton.get()
+        )
+
+        success = self.lp_habit_statuses['habit-added'].replace('[1]', self.habit_name_entry.get()).replace('[2]', self.habit_start_combo.get()).replace('[3]', str(int(self.habit_freq_slider.get()))).replace('[4]', str(int(self.habit_qty_entry.get())))
+        self.status_label.configure(text=success, text_color='lightgreen')
+        
     
     def UpdateSliderLabel(self, value: int) -> None:
         """Updates the content of label showing current slider state.
@@ -335,12 +400,12 @@ class Main(ctk.CTk):
         Args:
             value (str): Value of the currently set mode.
         """
-        if value == self.weekends[0]:
-            self.habit_tip_label.configure(text=self.tips[0])
-        elif value == self.weekends[1]:
-            self.habit_tip_label.configure(text=self.tips[1])
+        if value == self.lp_weekends[0]:
+            self.habit_tip_label.configure(text=self.lp_tips[0])
+        elif value == self.lp_weekends[1]:
+            self.habit_tip_label.configure(text=self.lp_tips[1])
         else:
-            self.habit_tip_label.configure(text=self.tips[2])
+            self.habit_tip_label.configure(text=self.lp_tips[2])
             
         
     def ChangeUsername(self) -> None:
