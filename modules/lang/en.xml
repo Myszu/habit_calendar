@@ -49,6 +49,14 @@
             <tasks>Tasks</tasks>
             <summary>Summary</summary>
         </tabs>
+        <habit-statuses>
+            <name-short>Name of the habit seem bit short. 3 characters is a bare minimum.</name-short>
+            <name-long>Name of the habit is to long. Max 25 characters (exeeded by X).</name-long>
+            <name-chars>Forbidden characters used in the name of the habit.</name-chars>
+            <qty-type>Value "X" does not seam like a valid number.</qty-type>
+            <qty-big>Exceeded maximum number of days. Choose 1-365 or 0 for infinite.</qty-big>
+            <habit-added>Habit "[1]" added! It will start [2] and will occur every [3] day(s) for [4] days!</habit-added>
+        </habit-statuses>
     </user>
     <settings>
         <set>Set</set>
