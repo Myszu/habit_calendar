@@ -18,6 +18,7 @@ class Language():
         weekends = [tab.text for tab in root.find('user').find('weekends')]
         tips = [tab.text for tab in root.find('user').find('tips')]
         tabs = [tab.text for tab in root.find('user').find('tabs')]
+        habit_statuses = {record.tag: record.text for record in root.find('user').find('habit-statuses')}
         settings = {record.tag: record.text for record in root.find('settings')}
         
         languages_names = [record.text for record in root.find('languages')]
@@ -26,5 +27,5 @@ class Language():
         short_days = [day.text for day in days.find('short')]
         full_days = [day.text for day in days.find('full')]
         
-        pack = [main, user_panel, weekends, tips, tabs, settings, languages_names, short_days, full_days]
+        pack = [main, user_panel, weekends, tips, tabs, habit_statuses, settings, languages_names, short_days, full_days]
         return pack
