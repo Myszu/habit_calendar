@@ -10,7 +10,7 @@ FONT = cfg.get('Main', 'font')
 SHORTCUTS = cfg.getboolean('Main', 'shortcuts')
 THEME = cfg.get('Main', 'theme')
 MODE = cfg.get('Main', 'mode')
-VER = 'ver. 1.0.12'
+VER = 'ver. 1.0.13'
 
 def SaveChanges(section: str, setting: str, value) -> None:
     """Save changes made by user to the config file.
