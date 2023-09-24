@@ -7,12 +7,12 @@ class Habits(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user = Column(String)
-    habit_name = Column(String)
-    start_date = Column(Date)
+    name = Column(String)
     icon = Column(String)
+    start_date = Column(Date)
     frequency = Column(Integer)
     quantity = Column(Integer)
-    weekends = Column(Boolean)
+    weekends = Column(String)
    
 
 class Users(Base):
@@ -34,6 +34,6 @@ class Tasks(Base):
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     user = Column(String)
-    task_name = Column(String)
+    name = Column(String)
     date = Column(Date)
     state = Column(Boolean)
