@@ -7,6 +7,7 @@ import os
 from modules.database import SessionLocal, engine
 from modules.users import Users
 from modules.habits import Habits
+from modules.tasks import Tasks
 from modules.language import Language
 import modules.settings as set
 import modules.models as models
@@ -27,7 +28,7 @@ class Main(ctk.CTk):
         self.language = Language()
         
         self.InitializeDB()
-        self.users, self.habits = Users(self.db), Habits(self.db)
+        self.users, self.habits, self.tasks = Users(self.db), Habits(self.db), Tasks(self.db)
         self.users_count = self.users.CountUsers()
         
         if self.users_count == 0:
@@ -381,6 +382,17 @@ class Main(ctk.CTk):
         success = self.lp_habit_statuses['habit-added'].replace('[1]', self.habit_name_entry.get()).replace('[2]', self.habit_start_combo.get()).replace('[3]', str(int(self.habit_freq_slider.get()))).replace('[4]', str(int(self.habit_qty_entry.get())))
         self.status_label.configure(text=success, text_color='lightgreen')
         
+        
+    def GenerateTasks(self, habit_id: int) -> None:
+        """Generates tasks to fulfill based on the parent Habit.
+
+        Args:
+            habit_id (int): ID of a Habit to base on.
+        """
+        habit = self.habits.Get(habit_id)
+        for iteration in range(habit.quantity):
+            self.tasks.Add(self.active_user.name, habit.name, habit.start_date + timedelta(iteration*habit.frequency))
+            
     
     def UpdateSliderLabel(self, value: int) -> None:
         """Updates the content of label showing current slider state.
