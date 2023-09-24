@@ -1,5 +1,5 @@
 import modules.models as models
-from datetime import date, datetime
+from datetime import datetime
 
 class Habits():
     def __init__(self, db) -> None:
@@ -7,7 +7,30 @@ class Habits():
         self.db = db
 
     
-    def Add(self, user: str, habit_name: str, icon: str, start: str, freq: int, qty: int, weekends: str):
+    def Add(self, user: str, name: str, icon: str, start: str, freq: int, qty: int, weekends: str):
+        """Adds new habit to the database with given parameters.
+
+        Args:
+            user (str): Username that this habit belongs to.
+            habit_name (str): Name of this habit
+            icon (str): Id of an icon associated with this habit.
+            start (str): Start date of this habit.
+            freq (int): Frequency of occurence.
+            qty (int): Quantity of occurences.
+            weekends (str): States how this habits tasks belongs at weekend.
+        """
         start = datetime.strptime(start, '%d.%m.%Y')
-        self.db.add(models.Habits(user=user, habit_name=habit_name, icon=icon, start_date=start, frequency=freq, quantity=qty, weekends=weekends))
+        self.db.add(models.Habits(user=user, name=name, icon=icon, start_date=start, frequency=freq, quantity=qty, weekends=weekends))
         self.db.commit()
+        
+    
+    def Get(self, id: int) -> dict:
+        """Gets details of given habit.
+
+        Args:
+            id (int): ID of lookup habit.
+
+        Returns:
+            dict: Whole set of given habit's data.
+        """
+        return self.db.query(models.Habits).where(models.Habits.id == id).one()
