@@ -6,13 +6,13 @@ class Habits(Base):
     __tablename__ = "habits"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user = Column(String)
+    user_id = Column(Integer)
     name = Column(String)
     icon = Column(String)
     start_date = Column(Date)
     frequency = Column(Integer)
     quantity = Column(Integer)
-    weekends = Column(String)
+    weekends = Column(Integer)
    
 
 class Users(Base):
@@ -33,7 +33,7 @@ class Tasks(Base):
     __tablename__ = "tasks"
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user = Column(String)
+    user_id = Column(Integer)
     name = Column(String)
     date = Column(Date)
     state = Column(Boolean)
