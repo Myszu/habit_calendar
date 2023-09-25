@@ -370,13 +370,13 @@ class Main(ctk.CTk):
             self.status_label.configure(text=self.lp_habit_statuses['qty-big'], text_color='red')
         
         self.habits.Add(
-            self.active_user.name,
+            self.active_user.id,
             self.habit_name_entry.get(),
             list(self.icons.keys())[list(self.icons.values()).index(self.habit_icon_combo.get())],
             self.habit_start_combo.get(),
             int(self.habit_freq_slider.get()),
             int(self.habit_qty_entry.get()),
-            self.habit_weekend_segbutton.get()
+            self.lp_weekends.index(self.habit_weekend_segbutton.get())
         )
 
         success = self.lp_habit_statuses['habit-added'].replace('[1]', self.habit_name_entry.get()).replace('[2]', self.habit_start_combo.get()).replace('[3]', str(int(self.habit_freq_slider.get()))).replace('[4]', str(int(self.habit_qty_entry.get())))
@@ -390,9 +390,27 @@ class Main(ctk.CTk):
             habit_id (int): ID of a Habit to base on.
         """
         habit = self.habits.Get(habit_id)
-        for iteration in range(habit.quantity):
-            self.tasks.Add(self.active_user.name, habit.name, habit.start_date + timedelta(iteration*habit.frequency))
+        tasks = int(habit.quantity)
+        match habit.weekends:
+            case 2:
+                for iteration in range(habit.quantity):
+                    self.tasks.Add(self.active_user.id, habit.name, habit.start_date + timedelta(iteration*habit.frequency))
             
+            case 1:
+                pass
+                    
+            case _:
+                iteration = 0
+                while tasks > 0:
+                    iteration += 1
+                    current_date =  habit.start_date + timedelta(iteration*habit.frequency)
+                    
+                    if int(current_date.strftime("%w")) == 6 or int(current_date.strftime("%w")) == 0:
+                        continue
+                    
+                    self.tasks.Add(self.active_user.name, habit.name, current_date)
+                    tasks -= 1
+                        
     
     def UpdateSliderLabel(self, value: int) -> None:
         """Updates the content of label showing current slider state.
