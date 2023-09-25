@@ -7,7 +7,7 @@ class Habits():
         self.db = db
 
     
-    def Add(self, user: str, name: str, icon: str, start: str, freq: int, qty: int, weekends: str):
+    def Add(self, user_id: int, name: str, icon: str, start: str, freq: int, qty: int, weekends: int):
         """Adds new habit to the database with given parameters.
 
         Args:
@@ -17,10 +17,10 @@ class Habits():
             start (str): Start date of this habit.
             freq (int): Frequency of occurence.
             qty (int): Quantity of occurences.
-            weekends (str): States how this habits tasks belongs at weekend.
+            weekends (int): States how this habits tasks belongs at weekend.
         """
         start = datetime.strptime(start, '%d.%m.%Y')
-        self.db.add(models.Habits(user=user, name=name, icon=icon, start_date=start, frequency=freq, quantity=qty, weekends=weekends))
+        self.db.add(models.Habits(user_id=user_id, name=name, icon=icon, start_date=start, frequency=freq, quantity=qty, weekends=weekends))
         self.db.commit()
         
     
@@ -34,3 +34,4 @@ class Habits():
             dict: Whole set of given habit's data.
         """
         return self.db.query(models.Habits).where(models.Habits.id == id).one()
+        
