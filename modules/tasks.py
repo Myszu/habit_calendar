@@ -7,7 +7,7 @@ class Tasks():
         self.db = db
 
     
-    def Add(self, user: str, name: str, date: date, state: bool = False):
+    def Add(self, user_id: int, name: str, date: date, state: bool = False):
         """Adds a task of a habit to the database.
 
         Args:
@@ -16,7 +16,7 @@ class Tasks():
             date (date): Date of occurence.
             state (bool, optional): If fulfilled sets to True. Defaults to False.
         """
-        self.db.add(models.Tasks(user=user, name=name, date=date, state=state))
+        self.db.add(models.Tasks(user_id=user_id, name=name, date=date, state=state))
         self.db.commit()
         
     
