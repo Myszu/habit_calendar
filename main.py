@@ -397,6 +397,8 @@ class Main(ctk.CTk):
                     self.tasks.Add(self.active_user.id, habit.name, habit.start_date + timedelta(iteration*habit.frequency))
             
             case 1:
+                # Work in progress
+                
                 pass
                     
             case _:
