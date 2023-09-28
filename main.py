@@ -397,22 +397,36 @@ class Main(ctk.CTk):
                     self.tasks.Add(self.active_user.id, habit.name, habit.start_date + timedelta(iteration*habit.frequency))
             
             case 1:
-                # Work in progress
-                
-                pass
-                    
-            case _:
                 iteration = 0
                 while tasks > 0:
-                    iteration += 1
                     current_date =  habit.start_date + timedelta(iteration*habit.frequency)
+                    iteration += 1
                     
                     if int(current_date.strftime("%w")) == 6 or int(current_date.strftime("%w")) == 0:
                         continue
                     
                     self.tasks.Add(self.active_user.name, habit.name, current_date)
                     tasks -= 1
-                        
+                    
+            case _:
+                dates = []
+                iteration = 0
+
+                while tasks > 0:
+                    current_date = habit.start_date + timedelta(iteration*habit.frequency)
+                    iteration += 1
+                    
+                    if int(current_date.strftime("%w")) == 6 or int(current_date.strftime("%w")) == 0:
+                        while int(current_date.strftime("%w")) != 1:
+                            current_date += timedelta(1)
+                    
+                    if current_date in dates:
+                        continue
+                    
+                    self.tasks.Add(self.active_user.name, habit.name, current_date)
+                    tasks -= 1
+    
+                
     
     def UpdateSliderLabel(self, value: int) -> None:
         """Updates the content of label showing current slider state.

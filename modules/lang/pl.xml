@@ -40,8 +40,8 @@
             <include>Nie pomijaj</include>
         </weekends>
         <tips>
-            <actively>Uznaje, że weekend nie istnieje i kontynuuje liczenie od poniedziałku.</actively>
-            <pasively>Nadal zlicza dni weekendowe, ale jeśli zadanie przypadnie w któryś, przenosi je na poniedziałek.</pasively>
+            <actively>Uznaje, że weekend nie istnieje i  przenosi je na poniedziałek.</actively>
+            <pasively>Nadal zlicza dni weekendowe, ale jeśli zadanie przypadnie w któryś, kontynuuje liczenie od poniedziałku.</pasively>
             <include>Najlepszy tryb - brak taryfy ulgowej!</include>
         </tips>
         <tabs>
