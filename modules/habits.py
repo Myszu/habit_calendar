@@ -35,3 +35,6 @@ class Habits():
         """
         return self.db.query(models.Habits).where(models.Habits.id == id).one()
         
+
+    def GetNewest(self, user_id: int) -> dict:
+        return self.db.query(models.Habits).where(models.Habits.user_id == user_id).all()

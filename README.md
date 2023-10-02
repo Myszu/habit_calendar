@@ -12,7 +12,7 @@ In my case this will be displayed on old Windows Tablet not even connected to an
 - [ ] Decide how to display tasks (buttons on a calendar or separate frame)
 
 ## Weekend Skip
-I thing that at first the function of active and passive might be hard to understand (even I got it confused in the initial explaination). Frankly - in some cases there will be no difference at all - for example if you want the task to occur every single day. The difference is more visible the wider is the spread between tasks. For example if you want the task to show every other day for 7 days since 01.09.2023, then the ouutput will be:
+I think that at first the function of active and passive might be hard to understand (even I got it confused in the initial explaination). Frankly - in some cases there will be no difference at all - for example if you want the task to occur every single day. The difference is more visible the wider is the spread between tasks. For example if you want the task to show every other day for 7 days since 01.09.2023, then the ouutput will be:
 
 Active
     01.09.2023, 04.09.2023, 05.09.2023, 07.09.2023, 11.09.2023, 13.09.2023, 15.09.2023

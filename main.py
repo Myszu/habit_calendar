@@ -190,7 +190,7 @@ class Main(ctk.CTk):
         self.user_panel = ctk.CTkToplevel(self)
 
         self.user_panel.geometry('800x600')
-        self.user_panel.attributes('-topmost', True)
+        self.user_panel.attributes('-topmost', False)
         self.user_panel.title(self.lp_main['user-panel'])
         
         self.user_panel.grid_columnconfigure(0, weight=0)
@@ -378,6 +378,8 @@ class Main(ctk.CTk):
             int(self.habit_qty_entry.get()),
             self.lp_weekends.index(self.habit_weekend_segbutton.get())
         )
+        
+        self.GenerateTasks(self.habits.GetNewest(self.active_user.id)[-1].id)
 
         success = self.lp_habit_statuses['habit-added'].replace('[1]', self.habit_name_entry.get()).replace('[2]', self.habit_start_combo.get()).replace('[3]', str(int(self.habit_freq_slider.get()))).replace('[4]', str(int(self.habit_qty_entry.get())))
         self.status_label.configure(text=success, text_color='lightgreen')
