@@ -7,7 +7,7 @@ class Tasks():
         self.db = db
 
     
-    def Add(self, user_id: int, name: str, date: date, state: bool = False):
+    def Add(self, user_id: int, name: str, date: date, state: bool = False) -> None:
         """Adds a task of a habit to the database.
 
         Args:
@@ -20,14 +20,26 @@ class Tasks():
         self.db.commit()
         
     
-    def Get(self, id: int) -> dict:
+    def Get(self, id: int) -> object:
         """Gets details of given task.
 
         Args:
             id (int): ID of lookup task.
 
         Returns:
-            dict: Whole set of given task's data.
+            object: Dictionary-like set of given task's data.
         """
         return self.db.query(models.Tasks).where(models.Tasks.id == id).one()
+    
+    
+    def GetUsersTasks(self, user_id: int) -> object:
+        """Finds all tasks of given user.
+
+        Args:
+            user_id (int): ID of given user.
+
+        Returns:
+            object: Dictionary-like object of given user's tasks.
+        """
+        return self.db.query(models.Tasks).where(models.Tasks.user_id == user_id).all()
         

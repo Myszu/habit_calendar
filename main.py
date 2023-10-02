@@ -117,6 +117,11 @@ class Main(ctk.CTk):
         current_col = 0
         current_month = date.today().month
         
+        users_habits = self.habits.GetUsersHabits(self.active_user.id)
+        tasks_icons = {record.name: record.icon for record in users_habits}
+        users_tasks = self.tasks.GetUsersTasks(self.active_user.id)
+        users_tasks_dates = [record.date for record in users_tasks]
+        
         for i in range(len(self.cal)):
             if (i) % 7 == 0 and i > 1:
                 current_row += 1
@@ -150,6 +155,21 @@ class Main(ctk.CTk):
                 card.configure(border_width=2, border_color=self.main_color)
                 date_label.configure(font=self.font_today, text_color=self.main_color)
                 
+            if users_tasks and self.cal[i] in users_tasks_dates:
+                iterations = users_tasks_dates.count(self.cal[i])
+                if iterations > 1:
+                    column = 0
+                    for task in users_tasks:
+                        if task.date == self.cal[i]:
+                             task_button = ctk.CTkButton(card, text=self.icons[tasks_icons[task.name]], width=30)
+                             task_button.grid(row=1, column=column, padx=2, pady=(0, 10))
+                             column += 1
+                             iterations -= 1
+                else:
+                    task_button = ctk.CTkButton(card, text=self.icons[tasks_icons[users_tasks[users_tasks_dates.index(self.cal[i])].name]], width=30)
+                    task_button.grid(row=1, column=0, padx=2, pady=(0, 10))
+                    
+            
             self.cards.append(card)
             current_col += 1
         
@@ -379,7 +399,7 @@ class Main(ctk.CTk):
             self.lp_weekends.index(self.habit_weekend_segbutton.get())
         )
         
-        self.GenerateTasks(self.habits.GetNewest(self.active_user.id)[-1].id)
+        self.GenerateTasks(self.habits.GetNewest(self.active_user.id).id)
 
         success = self.lp_habit_statuses['habit-added'].replace('[1]', self.habit_name_entry.get()).replace('[2]', self.habit_start_combo.get()).replace('[3]', str(int(self.habit_freq_slider.get()))).replace('[4]', str(int(self.habit_qty_entry.get())))
         self.status_label.configure(text=success, text_color='lightgreen')
@@ -407,7 +427,7 @@ class Main(ctk.CTk):
                     if int(current_date.strftime("%w")) == 6 or int(current_date.strftime("%w")) == 0:
                         continue
                     
-                    self.tasks.Add(self.active_user.name, habit.name, current_date)
+                    self.tasks.Add(self.active_user.id, habit.name, current_date)
                     tasks -= 1
                     
             case _:
@@ -425,9 +445,8 @@ class Main(ctk.CTk):
                     if current_date in dates:
                         continue
                     
-                    self.tasks.Add(self.active_user.name, habit.name, current_date)
+                    self.tasks.Add(self.active_user.id, habit.name, current_date)
                     tasks -= 1
-    
                 
     
     def UpdateSliderLabel(self, value: int) -> None:

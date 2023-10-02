@@ -24,17 +24,37 @@ class Habits():
         self.db.commit()
         
     
-    def Get(self, id: int) -> dict:
+    def Get(self, id: int) -> object:
         """Gets details of given habit.
 
         Args:
             id (int): ID of lookup habit.
 
         Returns:
-            dict: Whole set of given habit's data.
+            object: Whole set of given habit's data.
         """
         return self.db.query(models.Habits).where(models.Habits.id == id).one()
         
 
-    def GetNewest(self, user_id: int) -> dict:
+    def GetNewest(self, user_id: int) -> list:
+        """Finds the newest, added habit of given user.
+
+        Args:
+            user_id (int): ID of the user.
+
+        Returns:
+            list: List of Dictionary-like objects with 
+        """
+        return self.db.query(models.Habits).where(models.Habits.user_id == user_id).all()[-1]
+    
+    
+    def GetUsersHabits(self, user_id: int) -> object:
+        """Finds all habits of given user.
+
+        Args:
+            user_id (int): ID of the user.
+
+        Returns:
+            object: Dictionary-like object of given user's habits.
+        """
         return self.db.query(models.Habits).where(models.Habits.user_id == user_id).all()
