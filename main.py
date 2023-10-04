@@ -156,23 +156,31 @@ class Main(ctk.CTk):
                 date_label.configure(font=self.font_today, text_color=self.main_color)
                 
             if users_tasks and self.cal[i] in users_tasks_dates:
+                icons_frame = ctk.CTkFrame(card, fg_color='transparent')
+                icons_frame.grid(row=1, column=0, padx=2, pady=2, sticky="nswe")
+                
                 iterations = users_tasks_dates.count(self.cal[i])
+                column = 0
                 if iterations > 1:
-                    column = 0
                     for task in users_tasks:
                         if task.date == self.cal[i]:
-                             task_button = ctk.CTkButton(card, text=self.icons[tasks_icons[task.name]], width=30)
-                             task_button.grid(row=1, column=column, padx=2, pady=(0, 10))
+                             task_button = ctk.CTkButton(icons_frame, text=self.icons[tasks_icons[task.name]], width=30)
+                             task_button.grid(row=0, column=column, padx=2, pady=(0, 10), sticky="we")
                              column += 1
                              iterations -= 1
                 else:
-                    task_button = ctk.CTkButton(card, text=self.icons[tasks_icons[users_tasks[users_tasks_dates.index(self.cal[i])].name]], width=30)
-                    task_button.grid(row=1, column=0, padx=2, pady=(0, 10))
+                    task_button = ctk.CTkButton(icons_frame, text=self.icons[tasks_icons[users_tasks[users_tasks_dates.index(self.cal[i])].name]], width=30)
+                    task_button.grid(row=0, column=0, padx=2, pady=(0, 10), sticky="we")
+                
+                if column > 0:
+                    icons_frame.columnconfigure([i for i in range(column)], weight=1)
+                else:
+                    icons_frame.columnconfigure(0, weight=1)
                     
             
             self.cards.append(card)
             current_col += 1
-        
+        print(current_col)
         
     def ApplyUserPref(self) -> None:
         """Applies users preferences to various settings.

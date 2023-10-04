@@ -42,4 +42,3 @@ class Tasks():
             object: Dictionary-like object of given user's tasks.
         """
         return self.db.query(models.Tasks).where(models.Tasks.user_id == user_id).all()
-        
