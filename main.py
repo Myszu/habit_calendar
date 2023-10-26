@@ -109,9 +109,15 @@ class Main(ctk.CTk):
         self.today = date.today()
         self.first_day = (self.today - timedelta(self.today.day - 1))
         self.first_day_weekday = int(self.first_day.strftime("%w"))
+        variety = 1
+        tiles = 42 if self.first_day_weekday == 0 else 35
+        
+        if tiles > 35:
+            self.content_frame.rowconfigure([1, 2, 3, 4, 5, 6], weight=1)
+            variety -= 7
             
-        for day in range(35):
-            self.cal.append((self.first_day + timedelta(day - self.first_day_weekday + 1)))
+        for day in range(tiles):
+            self.cal.append((self.first_day + timedelta(day - self.first_day_weekday + variety)))
             
         current_row = 0
         current_col = 0
